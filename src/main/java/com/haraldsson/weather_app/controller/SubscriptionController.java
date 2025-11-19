@@ -58,8 +58,7 @@ public class SubscriptionController {
             @RequestHeader("Authorization") String token) {
 
         UUID userId = extractUserId(token);
-        SubscriptionResponse subscription = subscriptionService.getForUser(userId);
-        subscriptionService.delete(subscription.id(), userId);
+        subscriptionService.deleteByUserId(userId);
         return ResponseEntity.noContent().build();
     }
 }
