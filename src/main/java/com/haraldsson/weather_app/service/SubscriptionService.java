@@ -1,8 +1,8 @@
 package com.haraldsson.weather_app.service;
 
 import com.haraldsson.weather_app.config.RabbitConfig;
-import com.haraldsson.weather_app.dto.SubscriptionRequest;
-import com.haraldsson.weather_app.dto.SubscriptionResponse;
+import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
+import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.repository.SubscriptionRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -29,7 +29,7 @@ public class SubscriptionService {
     /**
      * Skapar eller uppdaterar subscription för en user.
      */
-    public SubscriptionResponse createOrUpdate(UUID userId, SubscriptionRequest request) {
+    public SubscriptionResponseDTO createOrUpdate(UUID userId, SubscriptionRequestDTO request) {
         Optional<Subscription> optional = repository.findByUserId(userId);
 
         Subscription s;
@@ -58,7 +58,7 @@ public class SubscriptionService {
     /**
      * Hämtar subscription för en user
      */
-    public SubscriptionResponse getForUser(UUID userId) {
+    public SubscriptionResponseDTO getForUser(UUID userId) {
         Subscription s = repository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("No subscription found for user"));
 
@@ -78,8 +78,8 @@ public class SubscriptionService {
     /**
     * Gör om subscription till DTO
      */
-    private SubscriptionResponse toResponse(Subscription s) {
-        return new SubscriptionResponse(
+    private SubscriptionResponseDTO toResponse(Subscription s) {
+        return new SubscriptionResponseDTO(
                 s.getId(),
                 s.getUserId(),
                 s.getCity(),
@@ -110,6 +110,22 @@ public class SubscriptionService {
     public void publishDailySubscriptions() {
         List<Subscription> subscriptions = repository.findByTimeOfDayAndActive("07:00", true);
         subscriptions.forEach(this::sendSubscriptionEvent);
+    }
+
+    /**
+    * Hämtar en subscription entity
+     */
+    public Subscription getSubscriptionForUser(UUID userId) {
+        return repository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("No subscription found for user"));
+    }
+
+    /**
+     * Hämtar bara stad för en användare
+     */
+    public String getUserCity(UUID userId) {
+        Subscription subscription = getSubscriptionForUser(userId);
+        return subscription.getCity();
     }
 
 }
