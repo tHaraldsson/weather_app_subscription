@@ -11,7 +11,7 @@ import java.util.UUID;
 @Component
 public class JwtUtil {
     @Value("${jwt.secret}")
-    private String secret;// här måste vi sätta in secret key
+    private String secret;
 
     public UUID extractUserId(String token) {
         token = token.replace("Bearer ", "");
