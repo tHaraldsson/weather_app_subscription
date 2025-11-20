@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -25,11 +26,7 @@ public class SubscriptionController {
         this.jwtUtil = jwtUtil;
     }
 
-    private UUID extractUserId(String header) {
-        return jwtUtil.extractUserId(header);
-    }
-
-    // returnerar subscrip
+    // returnerar city och userid
     @GetMapping("/city")
     public ResponseEntity<CityResponseDTO> getUserCity(
             @RequestHeader("Authorization") String token) {
@@ -77,5 +74,26 @@ public class SubscriptionController {
         UUID userId = extractUserId(token);
         subscriptionService.deleteByUserId(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    // temporär testmetod för test token
+    @GetMapping("/test-token")
+    public Map<String, String> getTestToken() {
+
+        String testToken = "test-token-" + UUID.randomUUID();
+        return Map.of(
+                "token", testToken,
+                "userId", "11111111-1111-1111-1111-111111111111",
+                "message", "Use this token for testing"
+        );
+    }
+
+    // test metod som kollar om det är en testuser annars skickas riktig JWT val
+    private UUID extractUserId(String header) {
+        if (header != null && header.startsWith("Bearer test-token-")) {
+            return UUID.fromString("11111111-1111-1111-1111-111111111111");
+        }
+
+        return jwtUtil.extractUserId(header);
     }
 }
