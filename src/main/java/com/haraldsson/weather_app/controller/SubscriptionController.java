@@ -6,6 +6,7 @@ import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
 import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.service.SubscriptionService;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class SubscriptionController {
     public ResponseEntity<CityResponseDTO> getUserCity(
             @RequestHeader("Authorization") String token) {
 
-        UUID userId = extractUserId(token);
+        UUID userId = jwtUtil.extractUserId(token);
         Subscription subscription = subscriptionService.getSubscriptionForUser(userId);
 
         CityResponseDTO response = new CityResponseDTO(
@@ -41,59 +42,44 @@ public class SubscriptionController {
         return ResponseEntity.ok(response);
     }
 
+    // skapar en subscription som är kopplad till en user
     @PostMapping("/create")
     public ResponseEntity<SubscriptionResponseDTO> create(
             @RequestHeader("Authorization") String token,
             @RequestBody SubscriptionRequestDTO request) {
 
-        UUID userId = extractUserId(token);
+        UUID userId = jwtUtil.extractUserId(token);
         return ResponseEntity.ok(subscriptionService.createOrUpdate(userId, request));
     }
 
+    // Hämtar den aktuella subscription för en user
     @GetMapping("/my")
     public ResponseEntity<SubscriptionResponseDTO> getMySubscription(
             @RequestHeader("Authorization") String token) {
 
-        UUID userId = extractUserId(token);
+        UUID userId = jwtUtil.extractUserId(token);
         return ResponseEntity.ok(subscriptionService.getForUser(userId));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<SubscriptionResponseDTO> update(
-            @RequestHeader("Authorization") String token,
-            @RequestBody SubscriptionRequestDTO request) {
-
-        UUID userId = extractUserId(token);
-        return ResponseEntity.ok(subscriptionService.createOrUpdate(userId, request));
-    }
+    /**
+     * Create/Update i samma endpoint
+     */
+//    @PutMapping("/update")
+//    public ResponseEntity<SubscriptionResponseDTO> update(
+//            @RequestHeader("Authorization") String token,
+//            @RequestBody SubscriptionRequestDTO request) {
+//
+//        UUID userId = jwtUtil.extractUserId(token);
+//        return ResponseEntity.ok(subscriptionService.createOrUpdate(userId, request));
+//    }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> delete(
             @RequestHeader("Authorization") String token) {
 
-        UUID userId = extractUserId(token);
+        UUID userId = jwtUtil.extractUserId(token);
         subscriptionService.deleteByUserId(userId);
         return ResponseEntity.noContent().build();
     }
 
-    // temporär testmetod för test token
-    @GetMapping("/test-token")
-    public Map<String, String> getTestToken() {
-
-        String testToken = "test-token-" + UUID.randomUUID();
-        return Map.of(
-                "token", testToken,
-                "userId", "11111111-1111-1111-1111-111111111111",
-                "message", "Use this token for testing"
-        );
-    }
-
-    // test metod som kollar om det är en testuser annars skickas riktig JWT val
-    private UUID extractUserId(String header) {
-        if (header != null && header.startsWith("Bearer test-token-")) {
-            return UUID.fromString("11111111-1111-1111-1111-111111111111");
-        }
-
-        return jwtUtil.extractUserId(header);
-    }
 }
