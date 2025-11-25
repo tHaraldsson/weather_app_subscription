@@ -1,20 +1,22 @@
 package com.haraldsson.weather_app.service;
 
 import com.haraldsson.weather_app.config.RabbitConfig;
+import com.haraldsson.weather_app.dto.CityResponseDTO;
 import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
 import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.repository.SubscriptionRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@EnableScheduling
 @Service
 public class SubscriptionService {
 
@@ -93,13 +95,19 @@ public class SubscriptionService {
      * Skickar ett meddelande om subscription till RabbitMQ.
      */
     private void sendSubscriptionEvent(Subscription s) {
-        Map<String, Object> payload = Map.of(
-                "userId", s.getUserId().toString(),
-                "city", s.getCity(),
-                "timeOfDay", s.getTimeOfDay()
-        );
+        try {
+            CityResponseDTO notification = new CityResponseDTO(
+                    s.getUserId().toString(),
+                    s.getCity()
+            );
 
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, payload);
+            System.out.println("Skickar till RabbitMQ: " + notification);
+
+            rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, notification);
+
+        } catch (Exception e) {
+            System.err.println("RabbitMQ failed: " + e.getMessage());
+        }
     }
 
     /**

@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.Base64;
 
 @SpringBootApplication
-@EnableScheduling
 @EnableRabbit
 public class WeatherAppApplication {
 
