@@ -91,4 +91,13 @@ public class SubscriptionController {
         );
     }
 
+    @GetMapping("/health")
+    public Map<String, String> health() {
+        return Map.of(
+                "status", "UP",
+                "service", "Weather App API",
+                "version", "1.0.0"
+        );
+    }
+
 }
