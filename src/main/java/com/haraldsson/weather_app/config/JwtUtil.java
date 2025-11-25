@@ -41,9 +41,4 @@ public class JwtUtil {
             throw new RuntimeException("Invalid JWT token: " + e.getMessage(), e);
         }
     }
-
-    //skapa test token i controllern
-    public SecretKey getSigningKeyForTest() {
-        return getSigningKey();
-    }
 }
