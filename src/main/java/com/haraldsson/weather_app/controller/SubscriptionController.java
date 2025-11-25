@@ -82,4 +82,13 @@ public class SubscriptionController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/ping")
+    public Map<String, String> ping() {
+        return Map.of(
+                "status", "OK",
+                "message", "Backend is running!",
+                "timestamp", java.time.LocalDateTime.now().toString()
+        );
+    }
+
 }
