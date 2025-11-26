@@ -6,6 +6,8 @@ import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
 import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.repository.SubscriptionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -22,6 +24,9 @@ public class SubscriptionService {
 
     private final SubscriptionRepository repository;
     private final RabbitTemplate rabbitTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
+
     @Autowired
     public SubscriptionService(SubscriptionRepository repository, RabbitTemplate rabbitTemplate) {
         this.repository = repository;
@@ -32,6 +37,7 @@ public class SubscriptionService {
      * Skapar eller uppdaterar subscription för en user.
      */
     public SubscriptionResponseDTO createOrUpdate(UUID userId, SubscriptionRequestDTO request) {
+        logger.info("Starting Create or update subscription");
         Optional<Subscription> optional = repository.findByUserId(userId);
 
         Subscription s;
@@ -95,12 +101,13 @@ public class SubscriptionService {
      * Skickar ett meddelande om subscription till RabbitMQ.
      */
     private void sendSubscriptionEvent(Subscription s) {
+        logger.info("Starting sendsubscription");
         try {
             CityResponseDTO notification = new CityResponseDTO(
                     s.getUserId().toString(),
                     s.getCity()
             );
-
+logger.info("skickar till johann: " + notification);
             System.out.println("Skickar till Johan: " + notification);
 
             rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, notification);
