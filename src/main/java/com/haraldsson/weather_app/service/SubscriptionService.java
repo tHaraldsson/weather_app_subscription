@@ -101,7 +101,7 @@ public class SubscriptionService {
                     s.getCity()
             );
 
-            System.out.println("Skickar till RabbitMQ: " + notification);
+            System.out.println("Skickar till Johan: " + notification);
 
             rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, notification);
 
