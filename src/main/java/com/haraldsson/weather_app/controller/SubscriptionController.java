@@ -6,7 +6,6 @@ import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
 import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.service.SubscriptionService;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +26,7 @@ public class SubscriptionController {
         this.jwtUtil = jwtUtil;
     }
 
-    // returnerar city och userid
+    // returnerar city och userid -- behövs ej. skickas via messagebroker
     @GetMapping("/city")
     public ResponseEntity<CityResponseDTO> getUserCity(
             @RequestHeader("Authorization") String token) {
@@ -61,17 +60,6 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.getForUser(userId));
     }
 
-    /**
-     * Create/Update i samma endpoint
-     */
-//    @PutMapping("/update")
-//    public ResponseEntity<SubscriptionResponseDTO> update(
-//            @RequestHeader("Authorization") String token,
-//            @RequestBody SubscriptionRequestDTO request) {
-//
-//        UUID userId = jwtUtil.extractUserId(token);
-//        return ResponseEntity.ok(subscriptionService.createOrUpdate(userId, request));
-//    }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> delete(
