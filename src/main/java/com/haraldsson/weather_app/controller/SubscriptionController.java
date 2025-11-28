@@ -70,22 +70,4 @@ public class SubscriptionController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/ping")
-    public Map<String, String> ping() {
-        return Map.of(
-                "status", "OK",
-                "message", "Backend is running!",
-                "timestamp", java.time.LocalDateTime.now().toString()
-        );
-    }
-
-    @GetMapping("/health")
-    public Map<String, String> health() {
-        return Map.of(
-                "status", "UP",
-                "service", "Weather App API",
-                "version", "1.0.0"
-        );
-    }
-
 }
