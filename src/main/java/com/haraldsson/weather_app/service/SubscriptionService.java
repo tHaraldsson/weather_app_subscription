@@ -128,8 +128,7 @@ public class SubscriptionService {
     }
 
     /**
-     * Skickar alla due kl 7
-     * Hämtar subscriptions kl 7
+     * Kollar varje timme om det finns någon sub som matchar currentTime och skickar då till notificationService
      */
     @Scheduled(cron = "0 0 * * * *")
     public void publishDailySubscriptions() {
