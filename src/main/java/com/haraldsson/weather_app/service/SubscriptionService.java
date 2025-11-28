@@ -14,6 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,8 +70,8 @@ public class SubscriptionService {
     }
 
     private void validateTimeOfDay(String timeOfDay) {
-        if (!timeOfDay.matches("^([01]?[0-9]|2[0-3]):00$")) {
-            throw new RuntimeException("timeOfDay must be in format HH:00");
+        if (!timeOfDay.matches("^([01]?[0-9]|2[0-3]):[0-5][0-9]$")) {
+            throw new RuntimeException("timeOfDay must be in format HH:MM");
         }
     }
 
@@ -130,7 +132,7 @@ public class SubscriptionService {
     /**
      * Kollar varje timme om det finns någon sub som matchar currentTime och skickar då till notificationService
      */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 */5 * * * *", zone = "Europe/Stockholm")
     public void publishDailySubscriptions() {
 
         String currentTime = getCurrentTimeString();
@@ -157,9 +159,10 @@ public class SubscriptionService {
      * Hämtar nuvarande tid i format "HH:00"
      */
     private String getCurrentTimeString() {
-        int currentHour = java.time.LocalTime.now().getHour();
-        return String.format("%02d:00", currentHour);
+        LocalTime now = LocalTime.now(ZoneId.of("Europe/Stockholm"));
+        return String.format("%02d:%02d", now.getHour(), now.getMinute());
     }
+
 
 
 
