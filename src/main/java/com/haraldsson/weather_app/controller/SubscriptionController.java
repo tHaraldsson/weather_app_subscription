@@ -44,8 +44,12 @@ public class SubscriptionController {
     // skapar en subscription som är kopplad till en user
     @PostMapping("/create")
     public ResponseEntity<SubscriptionResponseDTO> create(
-            @RequestHeader("Authorization") String token,
+            @CookieValue(value = "jwt", required = false) String token,
             @RequestBody SubscriptionRequestDTO request) {
+
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
 
         UUID userId = jwtUtil.extractUserId(token);
         return ResponseEntity.ok(subscriptionService.createOrUpdate(userId, request));
@@ -54,7 +58,11 @@ public class SubscriptionController {
     // Hämtar den aktuella subscription för en user
     @GetMapping("/my")
     public ResponseEntity<SubscriptionResponseDTO> getMySubscription(
-            @RequestHeader("Authorization") String token) {
+            @CookieValue(value = "jwt", required = false) String token) {
+
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
 
         UUID userId = jwtUtil.extractUserId(token);
         return ResponseEntity.ok(subscriptionService.getForUser(userId));
