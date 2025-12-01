@@ -13,7 +13,7 @@ public class HealthController {
 
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
-        log.info("AUTH HEALTH CHECK OK");
-        return ResponseEntity.ok().body("AUTH OK");
+        log.info("SUBSCRIPTION HEALTH CHECK OK");
+        return ResponseEntity.ok().body("SUB OK");
     }
 }

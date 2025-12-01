@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @EnableScheduling
 @Service
@@ -147,16 +148,36 @@ public class SubscriptionService {
             return;
         }
 
+        // 2 sekunders delay mellan subscriptions
+        int delayInSeconds = 2;
+        AtomicInteger counter = new AtomicInteger(1);
+
         subscriptions.forEach(subscription -> {
-            logger.info("sending notification to user: {} at {}", subscription.getUserId(), currentTime);
+            logger.info("Sending notification to user: {} at {} ({}/{})",
+                    subscription.getUserId(),
+                    currentTime,
+                    counter.getAndIncrement(),
+                    subscriptions.size());
+
             sendSubscriptionEvent(subscription);
+
+
+            if (counter.get() <= subscriptions.size()) {
+                try {
+                    Thread.sleep(delayInSeconds * 1000);
+                    logger.debug("Waited {} seconds before next notification", delayInSeconds);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("Interrupted while waiting between notifications", e);
+                }
+            }
         });
 
-        logger.info("Done sending subscriptions for time {}", currentTime);
+        logger.info("Done sending {} subscriptions for time {}", subscriptions.size(), currentTime); // ÄNDRAT: Lägger till antal i logg
     }
 
     /**
-     * Hämtar nuvarande tid i format "HH:00"
+     * Hämtar nuvarande tid i format "HH:MM" - kollar var 5e minut
      */
     private String getCurrentTimeString() {
         LocalTime now = LocalTime.now(ZoneId.of("Europe/Stockholm"));
