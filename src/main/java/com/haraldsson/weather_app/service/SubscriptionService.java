@@ -163,9 +163,6 @@ public class SubscriptionService {
         return String.format("%02d:%02d", now.getHour(), now.getMinute());
     }
 
-
-
-
     /**
      * Hämtar en subscription entity
      */

@@ -21,7 +21,9 @@ public class JwtUtil {
 
     public UUID extractUserId(String token) {
         try {
-            token = token.replace("Bearer ", "");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
 
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
