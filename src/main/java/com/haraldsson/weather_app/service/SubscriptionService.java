@@ -51,14 +51,12 @@ public class SubscriptionService {
             s = optional.get();
             s.setCity(request.city());
             s.setTimeOfDay(request.timeOfDay());
-            s.setFrequency(request.frequency());
             s.setActive(true);
         } else {
             s = new Subscription(
                     userId,
                     request.city(),
-                    request.timeOfDay(),
-                    request.frequency()
+                    request.timeOfDay()
             );
         }
 
@@ -104,7 +102,6 @@ public class SubscriptionService {
                 s.getUserId(),
                 s.getCity(),
                 s.getTimeOfDay(),
-                s.getFrequency(),
                 s.isActive()
         );
     }

@@ -17,28 +17,22 @@ public class Subscription {
     String city;
     @Column(nullable = false)
     String timeOfDay;
-    @Column(nullable = false)
-    String frequency;
 
     boolean active;
 
     public Subscription() {}
 
-    public Subscription(UUID userId, String city, String timeOfDay, String frequency) {
+    public Subscription(UUID userId, String city, String timeOfDay) {
         this.userId = userId;
         this.city = city;
         this.timeOfDay = timeOfDay;
-        this.frequency = frequency;
         this.active = true;
     }
 
 
+
     public UUID getUserId() {
         return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 
     public String getCity() {
@@ -55,14 +49,6 @@ public class Subscription {
 
     public void setTimeOfDay(String timeOfDay) {
         this.timeOfDay = timeOfDay;
-    }
-
-    public String getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
     }
 
     public boolean isActive() {

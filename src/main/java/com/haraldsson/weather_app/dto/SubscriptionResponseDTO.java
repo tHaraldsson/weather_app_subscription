@@ -7,6 +7,5 @@ public record SubscriptionResponseDTO(
         UUID userId,
         String city,
         String timeOfDay,
-        String frequency,
         boolean active
 ) {}
