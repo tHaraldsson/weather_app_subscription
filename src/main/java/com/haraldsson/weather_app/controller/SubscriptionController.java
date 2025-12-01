@@ -6,6 +6,8 @@ import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
 import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.service.SubscriptionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
     private final JwtUtil jwtUtil;
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
 
     @Autowired
     public SubscriptionController(SubscriptionService subscriptionService, JwtUtil jwtUtil) {
@@ -48,6 +51,7 @@ public class SubscriptionController {
             @RequestBody SubscriptionRequestDTO request) {
 
         if (token == null || token.isEmpty()) {
+            logger.info("TOKEN IS NULL OR EMPTY!!!" + token);
             return ResponseEntity.status(401).build();
         }
 
