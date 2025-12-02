@@ -62,8 +62,6 @@ public class SubscriptionService {
 
         repository.save(s);
 
-        sendSubscriptionEvent(s);
-
         return toResponse(s);
     }
 
@@ -129,7 +127,7 @@ public class SubscriptionService {
     /**
      * Kollar varje timme om det finns någon sub som matchar currentTime och skickar då till notificationService
      */
-    @Scheduled(cron = "0 */5 * * * *", zone = "Europe/Stockholm")
+    @Scheduled(cron = "0 */1 * * * *", zone = "Europe/Stockholm")
     public void publishDailySubscriptions() {
 
         String currentTime = getCurrentTimeString();
