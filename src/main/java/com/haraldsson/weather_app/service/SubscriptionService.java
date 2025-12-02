@@ -41,7 +41,7 @@ public class SubscriptionService {
     public SubscriptionResponseDTO createOrUpdate(UUID userId, SubscriptionRequestDTO request) {
         logger.info("Starting Create or update subscription");
 
-        // validerar att timeofday är i rätt format HH:00
+        // validerar att timeofday är i rätt format HH:MM - var 5e min
         validateTimeOfDay(request.timeOfDay());
 
         Optional<Subscription> optional = repository.findByUserId(userId);
