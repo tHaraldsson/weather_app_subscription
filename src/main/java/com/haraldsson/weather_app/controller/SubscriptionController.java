@@ -6,6 +6,7 @@ import com.haraldsson.weather_app.dto.SubscriptionRequestDTO;
 import com.haraldsson.weather_app.dto.SubscriptionResponseDTO;
 import com.haraldsson.weather_app.model.Subscription;
 import com.haraldsson.weather_app.service.SubscriptionService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,8 @@ public class SubscriptionController {
     @PostMapping("/create")
     public ResponseEntity<SubscriptionResponseDTO> create(
             @RequestHeader(value = "Authorization", required = false) String token,
-            @RequestBody SubscriptionRequestDTO request) {
+            @Valid @RequestBody SubscriptionRequestDTO request
+    ) {
 
         if (token == null || token.isEmpty()) {
             logger.info("TOKEN IS NULL OR EMPTY!!!" + token);

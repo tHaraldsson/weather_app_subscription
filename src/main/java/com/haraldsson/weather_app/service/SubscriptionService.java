@@ -41,7 +41,7 @@ public class SubscriptionService {
     public SubscriptionResponseDTO createOrUpdate(UUID userId, SubscriptionRequestDTO request) {
         logger.info("Starting Create or update subscription");
 
-        // validerar att timeofday är i rätt format HH:MM - var 5e min
+        // validerar att timeofday är i rätt format HH:MM
         validateTimeOfDay(request.timeOfDay());
 
         Optional<Subscription> optional = repository.findByUserId(userId);
@@ -114,8 +114,11 @@ public class SubscriptionService {
                     s.getUserId().toString(),
                     s.getCity()
             );
-            logger.info("skickar till johan: " + notification);
-            System.out.println("Skickar till Johan: " + notification);
+            if (notification != null) {
+                logger.info("Sending to notification");
+            } else {
+                logger.info("No subscription found skipping notification");
+            }
 
             rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY, notification);
 
@@ -143,7 +146,11 @@ public class SubscriptionService {
         }
 
         subscriptions.forEach(subscription -> {
-            logger.info("sending notification to user: {} at {}", subscription.getUserId(), currentTime);
+            if (subscription != null) {
+                logger.info("Sending notification to user with subscription at {}", currentTime);
+            } else {
+                logger.info("No subscription found, skipping notification at {}", currentTime);
+            }
             sendSubscriptionEvent(subscription);
         });
 
