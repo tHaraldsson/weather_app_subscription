@@ -32,17 +32,19 @@ The frontend is built with React and Vite, providing a responsive, secure, and u
 
 ## Project Structure
 
+```text
 app/
-├─ auth/          # Authentication pages (Login, Register)
-├─ chat/          # Chat interface
-├─ components/    # Reusable components (Header, LogoutButton, ProtectedRoute)
-├─ context/       # AuthContext for managing user authentication
-├─ documents/     # Documents page
-├─ index/         # Homepage and general styles
-├─ routes/        # Route definitions for navigation
-├─ services/      # API service for backend communication
-├─ types/         # TypeScript type definitions
-└─ upload/        # Upload page and related styles
+├─ auth/ # Authentication pages (Login, Register)
+├─ chat/ # Chat interface
+├─ components/ # Reusable components (Header, LogoutButton, ProtectedRoute)
+├─ context/ # AuthContext for managing user authentication
+├─ documents/ # Documents page
+├─ index/ # Homepage and general styles
+├─ routes/ # Route definitions for navigation
+├─ services/ # API service for backend communication
+├─ types/ # TypeScript type definitions
+└─ upload/ # Upload page and related styles
+```
 
 
 ---
